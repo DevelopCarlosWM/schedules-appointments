@@ -1,0 +1,33 @@
+version: "3.9"
+services:
+  postgres:
+    image: postgres:latest
+    container_name: schedule_appointments_db_container
+    environment:
+      - POSTGRES_DB=shedules_dev_db
+      - POSTGRES_USER=carloseduardolopez
+      - POSTGRES_PASSWORD=dev
+    ports:
+      - '5433:5433'
+    volumes:
+      - schedulesappointment:/var/lib/postgresql/data_dev_1
+    restart: always
+  schedulesappointment:
+    image: schedules-appointment
+    build: .
+    volumes:
+      - type: bind
+        source: .
+        target: /opt/app
+    environment:
+      - DB_SCHEMA=postgres
+      - DB_USER=carloseduardolopez
+      - DB_PASSWORD= 
+      - DB_HOST=postgres
+      - CHOKIDAR_USEPOLLING=true
+    depends_on:
+      - postgres
+    ports:
+      - '3000:3000'
+volumes:
+  schedulesappointment:
